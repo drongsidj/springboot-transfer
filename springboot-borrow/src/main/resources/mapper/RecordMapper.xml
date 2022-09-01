@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.igio.springbootBorrow.mapper.RecordMapper">
+
+    <resultMap id="BaseResultMap" type="top.igio.springbootBorrow.entity.Record">
+            <id property="recordId" column="record_id" jdbcType="BIGINT"/>
+            <result property="borrowId" column="borrow_id" jdbcType="BIGINT"/>
+            <result property="lendId" column="lend_id" jdbcType="BIGINT"/>
+            <result property="transferAmount" column="transfer_amount" jdbcType="DECIMAL"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="begainTime" column="begain_time" jdbcType="TIMESTAMP"/>
+            <result property="tansfertType" column="tansfert_type" jdbcType="TINYINT"/>
+            <result property="appointmentStatus" column="appointment_status" jdbcType="VARCHAR"/>
+            <result property="appointmentTime" column="appointment_time" jdbcType="TIMESTAMP"/>
+            <result property="isSucceed" column="is_succeed" jdbcType="VARCHAR"/>
+            <result property="addTime" column="add_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        record_id,borrow_id,lend_id,
+        transfer_amount,create_time,begain_time,
+        tansfert_type,appointment_status,appointment_time,
+        is_succeed,add_time,update_time
+    </sql>
+</mapper>

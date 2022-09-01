@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.igio.springboottransfer.mapper.CustomerMapper">
+
+    <resultMap id="BaseResultMap" type="top.igio.springboottransfer.entity.Customer">
+            <id property="customerId" column="customer_id" jdbcType="BIGINT"/>
+            <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+            <result property="customerGrade" column="customer_grade" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        customer_id,customer_name,customer_grade,
+        create_time,update_time,is_deleted
+    </sql>
+
+    <select id="findById" resultType="top.igio.springboottransfer.entity.Customer">
+        SELECT customer_id,customer_name,customer_grade,
+               create_time,update_time,is_deleted FROM customer WHERE customer_id = #{customerId} AND is_deleted = 0
+    </select>
+
+    <resultMap id="getCustomerAndAcount" type="top.igio.springboottransfer.entity.Customer">
+        <id property="customerId" column="customer_id" jdbcType="BIGINT"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="customerGrade" column="customer_grade" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        <collection property="accounts" ofType="top.igio.springboottransfer.entity.Account">
+            <id property="accountId" column="account_id" jdbcType="BIGINT"/>
+            <result property="accountName" column="account_name" jdbcType="VARCHAR"/>
+            <result property="balance" column="balance" jdbcType="DECIMAL"/>
+            <result property="availableBalance" column="available_balance" jdbcType="DECIMAL"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        </collection>
+    </resultMap>
+    <select id="getCustomerAndAccount" resultMap="getCustomerAndAcount">
+        SELECT customer.customer_id,customer_name,customer_grade,customer.create_time,customer.update_time,customer.is_deleted,
+               account_id,account_name,balance,available_balance,account.create_time,account.update_time,account.is_deleted
+        FROM customer LEFT JOIN account ON customer.customer_id = account.customer_id
+        WHERE customer.customer_id = #{customerId}
+    </select>
+
+    <select id="getCustomerList" resultType="top.igio.springboottransfer.entity.Customer">
+       SELECT customer_id,customer_name,customer_grade,
+              create_time,update_time,is_deleted FROM customer WHERE is_deleted = 0
+    </select>
+
+    <insert id="insertAll" useGeneratedKeys="true" keyProperty="customerId">
+        INSERT INTO customer values (null, #{customerName},#{customerGrade},CURRENT_TIME,CURRENT_TIME,0)
+    </insert>
+
+    <update id="deleteById">
+        UPDATE  customer SET is_deleted = 1 WHERE customer_id = #{customerId}
+    </update>
+
+    <update id="updateById" parameterType="top.igio.springboottransfer.entity.Customer">
+        UPDATE customer
+--         customer_name=#{customerName},
+--         customer_grade=#{customerGrade},
+--         update_time=CURRENT_TIME
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerName!=null">
+                customer_name=#{customerName},
+            </if>
+            <if test="customerGrade!=null">
+                customer_grade=#{customerGrade},
+            </if>
+            <if test="1">
+                update_time=CURRENT_TIME
+            </if>
+        </trim>
+        WHERE customer_id=#{customerId}
+    </update>
+</mapper>

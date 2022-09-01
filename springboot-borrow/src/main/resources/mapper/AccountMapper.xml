@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.igio.springbootBorrow.mapper.AccountMapper">
+
+    <resultMap id="BaseResultMap" type="top.igio.springbootBorrow.entity.Account">
+            <id property="accountId" column="account_id" jdbcType="BIGINT"/>
+            <result property="accountName" column="account_name" jdbcType="VARCHAR"/>
+            <result property="customerId" column="customer_id" jdbcType="BIGINT"/>
+            <result property="balance" column="balance" jdbcType="DECIMAL"/>
+            <result property="availableBalance" column="available_balance" jdbcType="DECIMAL"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        account_id,account_name,customer_id,
+        balance,available_balance,create_time,
+        update_time,is_deleted
+    </sql>
+
+    <select id="getByAccountId" resultType="top.igio.springbootBorrow.entity.Account">
+        SELECT account_id,account_name,customer_id,
+               balance,available_balance,create_time,
+               update_time,is_deleted FROM account WHERE account_id = #{accountId} AND is_deleted = 0
+    </select>
+
+    <insert id="insertAll" useGeneratedKeys="true" keyProperty="accountId">
+        INSERT INTO account
+        VALUES (null,#{accountName},#{customerId},#{balance},#{availableBalance},CURRENT_TIME,CURRENT_TIME,0)
+    </insert>
+
+    <update id="delByAccountId">
+        UPDATE account SET is_deleted = 1 WHERE account_id = #{accountId}
+    </update>
+
+    <update id="updateAccountId">
+        UPDATE account
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="accountName != null and accountName != ''">
+                account_name=#{accountName},
+            </if>
+            <if test="balance != null and balance != ''">
+                balance=#{balance},
+            </if>
+            <if test="availableBalance!=null and availableBalance != ''">
+                available_balance=#{availableBalance},
+            </if>
+            <if test="1">
+                update_time=CURRENT_TIME
+            </if>
+        </trim>
+        WHERE account_id = #{accountId}
+    </update>
+</mapper>
